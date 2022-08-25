@@ -23,7 +23,7 @@ from .utils import Util
 from rest_framework.authtoken.models import Token
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
-from Spardha.settings import BASE_URL_FRONTEND
+from Spardha.settings import BASE_URL_FRONTEND, SENDGRID_VERIFY_ACCOUNT_TEMP_ID, SENDGRID_RESET_ACCOUNT_TEMP_ID
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from scripts.user_registration import UsersSheet
@@ -136,18 +136,19 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
                 "password-reset-confirm", kwargs={"uidb64": uidb64, "token": token}
             )
             absurl = "https://" + current_site + relativeLink
-            email_body = f"""<h2> Spardha'22 </h2>
-                 <br> <strong> Hello {user.name}! </strong>
-                 <br> We have received a request to reset the password of your Spardha account. <br>
-                 Click the link below to proceed further: <br> <a href='{absurl}'>Reset</a> <br>
-                 If you have any questions, please contact us at 
-                 <a href='mailto:info@spardha.co.in'>info@spardha.co.in</a>"""
-            data = {
-                "email_body": email_body,
-                "to_mail": [user.email],
-                "email_subject": "Reset Your Spardha Password",
+
+            Temp_Data = {
+                "userName": user.name,
+                "reset-link": absurl
             }
-            Util.send_email(data)
+            data = {
+                "to_mail": [user.email],
+                "template_id": SENDGRID_RESET_ACCOUNT_TEMP_ID,
+                "dynamic_template_data": Temp_Data
+            }
+            # Util.send_email(data)
+            Util.send_email_sendgrid(data)
+
             return Response(
                 {"success": "Link has been sent by email to reset password"},
                 status=status.HTTP_200_OK,
@@ -257,23 +258,21 @@ def send_verification_mail(user, request):
     uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
     token = PasswordResetTokenGenerator().make_token(user)
     current_site = get_current_site(request=request).domain
-    relativeLink = reverse(
-        "activate-account", kwargs={"uidb64": uidb64, "token": token}
-    )
+    relativeLink = reverse("activate-account", kwargs={"uidb64": uidb64, "token": token})
     absurl = "https://" + current_site + relativeLink
-    email_body = f"""<h2> Spardha'22 </h2>
-         <br> <strong> Hello {user.name}! </strong>
-         <br> Thanks for registering on Spardha <br>
-         To complete your sign up, we just need to verify your email address.<br>
-         Click the link below to verify: <br> <a href='{absurl}'>Verify</a> <br>
-         <br> If you have any questions, please contact us at 
-         <a href='mailto:info@spardha.co.in'>info@spardha.co.in</a>"""
-    data = {
-        "email_body": email_body,
-        "to_mail": [user.email],
-        "email_subject": "Activate Your Spardha Account",
+
+    Temp_Data = {
+        "userName": user.name,
+        "activation-link": absurl
     }
-    Util.send_email(data)
+    data = {
+        "to_mail": [user.email],
+        "template_id": SENDGRID_VERIFY_ACCOUNT_TEMP_ID,
+        "dynamic_template_data": Temp_Data
+    }
+
+    # Util.send_email(data)
+    return Util.send_email_sendgrid(data)
 
 
 class RegisterView(generics.GenericAPIView):
