@@ -78,7 +78,10 @@ class UsersSheet:
             row.append(conti.leader_contact_num)
             row.append(conti.num_of_boys)
             row.append(conti.num_of_girls)
-            row.append(conti.num_of_officials)
+            # row.append(conti.num_of_officials)
+            row.append(conti.num_of_coaches_pti)
+            row.append(conti.num_of_faculty_members)
+            row.append(conti.num_of_supporting_staff)
         except:
             for i in range(5): row.append("")
 
