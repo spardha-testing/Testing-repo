@@ -65,7 +65,10 @@ class ContingentSerializer(serializers.ModelSerializer):
     college_rep = serializers.EmailField()
     num_of_boys = serializers.IntegerField()
     num_of_girls = serializers.IntegerField()
-    num_of_officials = serializers.IntegerField()
+    # num_of_officials = serializers.IntegerField()
+    num_of_coaches_pti = serializers.IntegerField()
+    num_of_faculty_members = serializers.IntegerField()
+    num_of_supporting_staff = serializers.IntegerField()
     leader_name = serializers.CharField()
     leader_contact_num = serializers.CharField()
 
@@ -74,7 +77,10 @@ class ContingentSerializer(serializers.ModelSerializer):
         college_rep = get_object_or_404(UserAccount, email=data["college_rep"])
         num_of_boys = data["num_of_boys"]
         num_of_girls = data["num_of_girls"]
-        num_of_officials = data["num_of_officials"]
+        # num_of_officials = data["num_of_officials"]
+        num_of_coaches_pti = data['num_of_coaches_pti']
+        num_of_faculty_members = data['num_of_faculty_members']
+        num_of_supporting_staff = data['num_of_supporting_staff']
         leader_name = data['leader_name']
         leader_contact_num = data["leader_contact_num"]
 
@@ -82,7 +88,10 @@ class ContingentSerializer(serializers.ModelSerializer):
             college_rep=college_rep,
             num_of_boys=num_of_boys,
             num_of_girls=num_of_girls,
-            num_of_officials=num_of_officials,
+            # num_of_officials=num_of_officials,
+            num_of_coaches_pti=num_of_coaches_pti,
+            num_of_faculty_members=num_of_faculty_members,
+            num_of_supporting_staff=num_of_supporting_staff,
             leader_name=leader_name,
             leader_contact_num=leader_contact_num,
         )
