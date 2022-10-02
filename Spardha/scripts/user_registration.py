@@ -83,7 +83,7 @@ class UsersSheet:
             row.append(conti.num_of_faculty_members)
             row.append(conti.num_of_supporting_staff)
         except:
-            for i in range(5): row.append("")
+            for i in range(7): row.append("")
 
         games = []
         for team in Team.objects.filter(user=user).select_related('game'):
